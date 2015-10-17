@@ -36,21 +36,35 @@ public class Casual{
 	public static void main(String[] args) throws NumberFormatException, HeadlessException,
 			IOException, NoSuchAlgorithmException{
 
-		/*
-		String koor = "-0.23 -574 34";
-		String num = "\\d+(((,|\\.)\\d+)|\\s*\\d+(\\s*\\d+)?)?";
-		String pattern = "([nNsS-])?\\s*" + num + "\\s*([eEwW-]|,)\\s*" + num;
-		boolean match = koor.matches(pattern);
+		String koor = "-0.23, 574.34";
+		
+		String numberPattern = "(-)?\\d+(\\.\\d+)?";
+		String wholePattern = numberPattern + "\\s*(,)\\s*" + numberPattern;
+		
+		boolean match = koor.matches(wholePattern);
 		System.out.println(match);
 
 		if(match){
-			Pattern p = Pattern.compile(num);
+			Pattern p = Pattern.compile(numberPattern);
 			Matcher m = p.matcher(koor);
 			while(m.find()){
 				System.out.println(m.group() + " -> " + parseToCoordinate(m.group()));
 			}
 		}
-		*/
+		
+		if(koor.matches(wholePattern)){
+			Pattern p = Pattern.compile(numberPattern);
+			Matcher m = p.matcher(koor);
+			
+			m.find();
+			double lat = Double.parseDouble(m.group());
+			m.find();
+			double lng = Double.parseDouble(m.group());
+			
+			Printer.print(lat);
+			Printer.print(", ");
+			Printer.print(lng);
+		}
 
 		// CuttingRod.test();
 
@@ -80,7 +94,7 @@ public class Casual{
 
 		// BetterSudokuSolver.test();
 
-		new IceCubeSolver("zeldaIceCube.txt");
+		// new IceCubeSolver("zeldaIceCube.txt");
 		
 		// TreeNode.test();
 		
