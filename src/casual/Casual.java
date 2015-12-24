@@ -1,42 +1,32 @@
 package casual;
 
-import interfaces.Condition;
-import interfaces.Selector;
+import gui.NoLayoutFrame;
+import interfaces.*;
 
+import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.HeadlessException;
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.naming.OperationNotSupportedException;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-import sudoku.BetterSudokuSolver;
-import sudoku.DancingLinks;
-import sudoku.SudokuSolver;
-import util.CharUtil;
-import util.Lazy;
-import util.Lambda;
-import util.Stream;
-import util.StreamUtil;
+import sudoku.*;
+import util.*;
 
 public class Casual{
 
 	public static void main(String[] args) throws NumberFormatException, HeadlessException,
 			IOException, NoSuchAlgorithmException{
 
-		String koor = "-0.23, 574.34";
+		/*String koor = "-0.23, 574.34";
 		
 		String numberPattern = "(-)?\\d+(\\.\\d+)?";
 		String wholePattern = numberPattern + "\\s*(,)\\s*" + numberPattern;
@@ -64,7 +54,7 @@ public class Casual{
 			Printer.print(lat);
 			Printer.print(", ");
 			Printer.print(lng);
-		}
+		}*/
 
 		// CuttingRod.test();
 
@@ -98,6 +88,11 @@ public class Casual{
 		
 		// TreeNode.test();
 		
+		// Cached.test();
+		
+		//NoLayoutFrame frame = new NoLayoutFrame(null);
+		//frame.setContentSize(150,150);
+		//frame.setVisible(true);
 	}
 
 	public static Iterable<Character> asCharIterable(final String s){

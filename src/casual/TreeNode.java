@@ -1,6 +1,5 @@
 package casual;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,12 +12,11 @@ public class TreeNode{
 		this.nodeList = nodeList;
 	}
 
-	public void print() throws UnsupportedEncodingException{
+	public void print(){
 		print(1, true, new char[maxDepth], 0);
 	}
 
-	private void print(int degree, boolean amILast, char[] fillerArray, int charCount)
-			throws UnsupportedEncodingException{
+	private void print(int degree, boolean amILast, char[] fillerArray, int charCount){
 
 		for(int i = 0; i < charCount; i++){
 			System.out.print(fillerArray[i]);
@@ -38,7 +36,7 @@ public class TreeNode{
 		}
 	}
 	
-	public static void test() throws UnsupportedEncodingException{
+	public static void test(){
 		TreeNode root = new TreeNode(new ArrayList<TreeNode>(){{
 			add(new TreeNode(new ArrayList<TreeNode>(){{
 				add(new TreeNode(new ArrayList<TreeNode>()));

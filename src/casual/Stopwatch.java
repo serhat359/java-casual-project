@@ -26,6 +26,12 @@ public class Stopwatch{
 		return totalElapsed;
 	}
 	
+	public void stopReportStart(){
+		stop();
+		report();
+		start();
+	}
+	
 	public void report(){
 		System.out.println("Elapsed time: " + this.getElapsedTime() + " ms");
 	}

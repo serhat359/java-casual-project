@@ -96,6 +96,12 @@ public class Stream<T> implements Iterable<T>{
 		});
 	}
 
+	public void forEach(Action<T> action){
+		for(T element: this){
+			action.run(element);
+		}
+	}
+	
 	public T reduce(Flattener<T> flattener){
 		if(isEmpty(iterable))
 			throw new RuntimeException("Iterable contains no element");

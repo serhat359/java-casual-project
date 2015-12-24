@@ -27,17 +27,22 @@ public class Lazy{
 		};
 	}
 
-	public static <T>Iterable<T> asIterable(final T[] array){
-		return new Iterable<T>(){
+	public static <T>CountedIterable<T> asIterable(final T[] array){
+		return new CountedIterable<T>(){
 			@Override
 			public Iterator<T> iterator(){
 				return getIterator(array);
 			}
+
+			@Override
+			public int count(){
+				return array.length;
+			}
 		};
 	}
 
-	public static <T>Iterable<T> asIterable(final T object){
-		return new Iterable<T>(){
+	public static <T>CountedIterable<T> asIterable(final T object){
+		return new CountedIterable<T>(){
 
 			@Override
 			public Iterator<T> iterator(){
@@ -66,10 +71,15 @@ public class Lazy{
 					}
 				};
 			}
+
+			@Override
+			public int count(){
+				return 1;
+			}
 		};
 	}
 
-	public static <T>CountedIterable<T> asIterableWithCount(final List<T> list){
+	public static <T>CountedIterable<T> asIterable(final List<T> list){
 		return new CountedIterable<T>(){
 
 			@Override
@@ -85,7 +95,7 @@ public class Lazy{
 		};
 	}
 
-	public static <T>CountedIterable<T> asIterableWithCount(final Iterable<T> iterable, final int count){
+	public static <T>CountedIterable<T> asIterable(final Iterable<T> iterable, final int count){
 		return new CountedIterable<T>(){
 
 			@Override
@@ -96,22 +106,6 @@ public class Lazy{
 			@Override
 			public int count(){
 				return count;
-			}
-
-		};
-	}
-
-	public static <T>CountedIterable<T> asIterableWithCount(final T[] array){
-		return new CountedIterable<T>(){
-
-			@Override
-			public Iterator<T> iterator(){
-				return getIterator(array);
-			}
-
-			@Override
-			public int count(){
-				return array.length;
 			}
 
 		};

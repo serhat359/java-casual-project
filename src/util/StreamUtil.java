@@ -33,11 +33,11 @@ public class StreamUtil{
 		return eof && ll.size() == 0 ? null : ll;
 	}
 
-	public static byte[] getAllBytes(InputStream is) throws IOException{
+	public static byte[] getAllBytes(InputStream stream) throws IOException{
 
-		byte[] data = new byte[is.available()];
+		byte[] data = new byte[stream.available()];
 
-		is.read(data);
+		stream.read(data);
 
 		return data;
 	}
