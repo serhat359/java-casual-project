@@ -94,7 +94,7 @@ public class QRCodeDisplay extends JPanel{
 		private final boolean isFilled;
 		private final int rIndex;
 		private final int cIndex;
-		private final Color filledColor = new Color(15,15,15);
+		private final Color filledColor = new Color(0, 0, 0);
 
 		public Cell(int x, int y, int width, int height, boolean isFilled, boolean[][] baseGrid,
 				int rIndex, int cIndex){
@@ -109,6 +109,11 @@ public class QRCodeDisplay extends JPanel{
 		}
 
 		public void paint(Graphics2D g2d){
+			Color topLeftColor;
+			Color topRightColor;
+			Color bottomLeftColor;
+			Color bottomRightColor;
+
 			if(isFilled){ // isBlack
 				// handle top left
 				{
@@ -121,8 +126,7 @@ public class QRCodeDisplay extends JPanel{
 						color = getOppositeColor();
 					}
 
-					g2d.setColor(color);
-					g2d.fillRect(x, y, width / 2, height / 2);
+					topLeftColor = color;
 				}
 
 				// handle top right
@@ -136,8 +140,7 @@ public class QRCodeDisplay extends JPanel{
 						color = getOppositeColor();
 					}
 
-					g2d.setColor(color);
-					g2d.fillRect(x + width / 2, y, width / 2, height / 2);
+					topRightColor = color;
 				}
 
 				// handle bottom left
@@ -151,8 +154,7 @@ public class QRCodeDisplay extends JPanel{
 						color = getOppositeColor();
 					}
 
-					g2d.setColor(color);
-					g2d.fillRect(x, y + height / 2, width / 2, height / 2);
+					bottomLeftColor = color;
 				}
 
 				// handle bottom right
@@ -166,8 +168,7 @@ public class QRCodeDisplay extends JPanel{
 						color = getOppositeColor();
 					}
 
-					g2d.setColor(color);
-					g2d.fillRect(x + width / 2, y + height / 2, width / 2, height / 2);
+					bottomRightColor = color;
 				}
 			}
 			else{ // isWhite
@@ -183,8 +184,7 @@ public class QRCodeDisplay extends JPanel{
 						color = getColor();
 					}
 
-					g2d.setColor(color);
-					g2d.fillRect(x, y, width / 2, height / 2);
+					topLeftColor = color;
 				}
 
 				// handle top right
@@ -198,8 +198,7 @@ public class QRCodeDisplay extends JPanel{
 						color = getColor();
 					}
 
-					g2d.setColor(color);
-					g2d.fillRect(x + width / 2, y, width / 2, height / 2);
+					topRightColor = color;
 				}
 
 				// handle bottom left
@@ -213,8 +212,7 @@ public class QRCodeDisplay extends JPanel{
 						color = getColor();
 					}
 
-					g2d.setColor(color);
-					g2d.fillRect(x, y + height / 2, width / 2, height / 2);
+					bottomLeftColor = color;
 				}
 
 				// handle bottom right
@@ -228,10 +226,21 @@ public class QRCodeDisplay extends JPanel{
 						color = getColor();
 					}
 
-					g2d.setColor(color);
-					g2d.fillRect(x + width / 2, y + height / 2, width / 2, height / 2);
+					bottomRightColor = color;
 				}
 			}
+
+			g2d.setColor(topLeftColor);
+			g2d.fillRect(x, y, width / 2, height / 2);
+
+			g2d.setColor(topRightColor);
+			g2d.fillRect(x + width / 2, y, width / 2, height / 2);
+
+			g2d.setColor(bottomLeftColor);
+			g2d.fillRect(x, y + height / 2, width / 2, height / 2);
+
+			g2d.setColor(bottomRightColor);
+			g2d.fillRect(x + width / 2, y + height / 2, width / 2, height / 2);
 
 			g2d.setColor(getColor());
 			g2d.fillOval(this.x, this.y, this.width, this.height);
@@ -255,12 +264,11 @@ public class QRCodeDisplay extends JPanel{
 		private Color getOppositeColor(){
 			return this.isFilled ? invert(filledColor) : filledColor;
 		}
-		
+
 		private Color invert(Color color){
-			Color textColor = new Color(255-color.getRed(),
-                    255-color.getGreen(),
-                    255-color.getBlue());
-			
+			Color textColor = new Color(255 - color.getRed(), 255 - color.getGreen(),
+					255 - color.getBlue());
+
 			return textColor;
 		}
 	}
