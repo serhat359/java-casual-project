@@ -93,6 +93,8 @@ public class Casual{
 		//NoLayoutFrame frame = new NoLayoutFrame(null);
 		//frame.setContentSize(150,150);
 		//frame.setVisible(true);
+		
+		QRCodeDisplay.test();
 	}
 
 	public static Iterable<Character> asCharIterable(final String s){
