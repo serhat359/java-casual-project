@@ -84,16 +84,16 @@ public class BetterSudokuSolver{
 				if(canIPut(array, row, col, i)){
 					array[row][col] = i;
 
-					boolean result;
+					boolean isSolved;
 
 					if(col < dim - 1)
-						result = tryToSolveStarting(array, row, col + 1);
+						isSolved = tryToSolveStarting(array, row, col + 1);
 					else if(row < dim - 1)
-						result = tryToSolveStarting(array, row + 1, 0);
+						isSolved = tryToSolveStarting(array, row + 1, 0);
 					else
-						result = true;
+						isSolved = true;
 
-					if(result)
+					if(isSolved)
 						return true;
 
 					array[row][col] = empty;

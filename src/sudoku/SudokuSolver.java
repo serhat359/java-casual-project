@@ -35,7 +35,12 @@ public class SudokuSolver{
 		print();
 	}
 
-	private void print(PrintStream stream){
+	public static void print(PrintStream stream, int dim, byte[] buffer){
+		printWithNoSpace(stream, dim, buffer);
+		printWithSpaces(stream, dim, buffer);
+	}
+
+	private static void printWithNoSpace(PrintStream stream, int dim, byte[] buffer){
 		for(int i = 0; i < dim; i++){
 			for(int y = 0; y < dim; y++)
 				stream.print((char)buffer[i * dim + y]);
@@ -44,7 +49,9 @@ public class SudokuSolver{
 		}
 
 		stream.print('\n');
+	}
 
+	private static void printWithSpaces(PrintStream stream, int dim, byte[] buffer){
 		// printRow
 		for(int i = 0, rowSpace = 0; i < dim; i++, rowSpace++){
 			for(int y = 0, columnSpace = 0; y < dim; y++, columnSpace++){
@@ -62,8 +69,10 @@ public class SudokuSolver{
 		stream.print('\n');
 	}
 
+	
+	
 	private void print(){
-		print(System.out);
+		print(System.out, dim, buffer);
 	}
 
 	public void solve(){
