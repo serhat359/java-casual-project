@@ -1,7 +1,7 @@
 package casual;
 import java.util.HashMap;
 
-public class Parser{
+public class ExpressionEvaluator{
 	private static HashMap<Character, Integer> ops = null;
 	private TreeNode currentNode;
 	private State state;
@@ -10,7 +10,7 @@ public class Parser{
 		ExpectingNumber, ExpectingOp
 	}
 
-	public Parser(){
+	public ExpressionEvaluator(){
 		if(ops == null){
 			ops = new HashMap<Character, Integer>();
 			ops.put('+', 1);
@@ -35,7 +35,7 @@ public class Parser{
 			if(c == '('){
 				int index = text.indexOf(')', i);
 				String subString = text.substring(i + 1, index);
-				add(new Parser().makeTree(subString));
+				add(new ExpressionEvaluator().makeTree(subString));
 				i = index;
 			}
 			else
@@ -90,7 +90,7 @@ public class Parser{
 	}
 	
 	public static void test(){
-		Parser parser = new Parser();
+		ExpressionEvaluator parser = new ExpressionEvaluator();
 
 		String text = "2+3*(5-2)/7-2+8*(2/2)";
 		text = "(2*2-1)^3";
@@ -113,7 +113,7 @@ public class Parser{
 			int valLeft = left != null ? left.calc() : 0;
 			int valRight = right != null ? right.calc() : 0;
 
-			if(Parser.isDigit(self)){
+			if(ExpressionEvaluator.isDigit(self)){
 				return self - '0';
 			}
 			if(self == '+')

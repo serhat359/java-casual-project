@@ -63,6 +63,7 @@ public class QRCodeDisplay extends JPanel{
 		frame.setLayout(null);
 	}
 
+	@Override
 	protected void paintComponent(Graphics g){
 		super.paintComponent(g);
 

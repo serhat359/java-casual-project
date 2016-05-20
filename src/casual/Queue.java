@@ -54,6 +54,7 @@ public class Queue<T> implements Iterable<T>{
 		return size;
 	}
 
+	@Override
 	public Iterator<T> iterator(){
 		return new Iterator<T>(){
 			Node<T> n = first;

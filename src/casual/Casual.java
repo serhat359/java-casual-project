@@ -13,18 +13,21 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javax.naming.OperationNotSupportedException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import sudoku.*;
-import util.*;
+import util.CharUtil;
+//import util.*;
+import util.Lazy;
 
 public class Casual{
 
-	public static void main(String[] args) throws NumberFormatException, HeadlessException,
-			IOException, NoSuchAlgorithmException{
+	public static void main(String[] args)
+			throws NumberFormatException, HeadlessException, IOException, NoSuchAlgorithmException{
 
 		/*String koor = "-0.23, 574.34";
 		
@@ -33,7 +36,7 @@ public class Casual{
 		
 		boolean match = koor.matches(wholePattern);
 		System.out.println(match);
-
+		
 		if(match){
 			Pattern p = Pattern.compile(numberPattern);
 			Matcher m = p.matcher(koor);
@@ -85,16 +88,51 @@ public class Casual{
 		// BetterSudokuSolver.test();
 
 		// new IceCubeSolver("zeldaIceCube.txt");
-		
+
 		// TreeNode.test();
-		
+
 		// Cached.test();
+
+		// NoLayoutFrame frame = new NoLayoutFrame(null);
+		// frame.setContentSize(150,150);
+		// frame.setVisible(true);
+
+		// QRCodeDisplay.test();
+
+		// testLambdaExp();
 		
-		//NoLayoutFrame frame = new NoLayoutFrame(null);
-		//frame.setContentSize(150,150);
-		//frame.setVisible(true);
+		// getGeometricTriangles();
 		
-		QRCodeDisplay.test();
+		
+	}
+
+	private static void getGeometricTriangles(){
+		HashMap<Integer, String> set = new HashMap<>();
+		
+		for(int i = 2; i < 2000 ; i++){
+			int iSq = i*i;
+			
+			for(int j = i - 1; j > 0; j--){
+				int diff = iSq - j*j;
+				
+				String repres = i + " - " + j;
+				
+				String value = set.get(diff);
+				
+				if(value != null){
+					System.out.println(value + " and " + repres + " are matches");
+				}
+				
+				set.put(diff, repres);
+			}
+		}
+	}
+
+	private static void testLambdaExp(){
+		Integer[] myList = { 3, 38, 28, 10 };
+
+		Arrays.stream(myList).filter(x -> x > 10).map(x -> Integer.toString(x)).sorted()
+				.forEach(System.out::println);
 	}
 
 	public static Iterable<Character> asCharIterable(final String s){
