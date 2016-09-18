@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class StreamUtil{
 
-	public static ArrayList<Character> GetLine(final InputStream is) throws IOException{
+	public static ArrayList<Character> getLine(final InputStream is) throws IOException{
 		ArrayList<Character> ll = new ArrayList<>(256);
 
 		boolean eof = false;

@@ -210,7 +210,7 @@ public class IceCubeSolver{
 		FileInputStream fis = new FileInputStream(fileName);
 
 		while(true){
-			List<Character> list = StreamUtil.GetLine(fis);
+			List<Character> list = StreamUtil.getLine(fis);
 
 			if(list != null){
 				array.add(list);

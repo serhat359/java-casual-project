@@ -28,7 +28,7 @@ public class NoLayoutFrame extends JFrame{
 	public void add(JComponent jc){
 		components.add(jc);
 	}
-	
+
 	public void remove(JComponent jc){
 		components.remove(jc);
 	}
