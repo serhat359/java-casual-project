@@ -93,7 +93,7 @@ public class ExpressionEvaluator{
 		ExpressionEvaluator parser = new ExpressionEvaluator();
 
 		String text = "2+3*(5-2)/7-2+8*(2/2)";
-		text = "(2*2-1)^3";
+		//text = "(2*2-1)^3";
 
 		System.out.print(parser.makeTree(text).calc());
 	}

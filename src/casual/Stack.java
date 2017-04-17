@@ -154,4 +154,21 @@ public class Stack<E> implements Iterable<E>, Cloneable{
 	public Stack<E> reversed(){
 		return new Stack<E>(this);
 	}
+	
+	public static void main(){
+		Stack<Integer> st = new Stack<>();
+
+		st.push(3);
+		st.push(5);
+
+		for(Integer x: Lazy.range(1, 500000)){
+			st.push(x);
+		}
+		
+		System.out.println(st.peek());
+
+		st.pop();
+
+		System.out.println(st.peek());
+	}
 }

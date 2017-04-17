@@ -1,63 +1,12 @@
 package casual;
 
-import gui.NoLayoutFrame;
-import interfaces.*;
-
-import java.awt.Graphics;
-import java.awt.GridLayout;
 import java.awt.HeadlessException;
-import java.io.*;
-import java.nio.charset.Charset;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
-
-import javax.naming.OperationNotSupportedException;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-import sudoku.*;
-import util.CharUtil;
-//import util.*;
-import util.Lazy;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class Casual{
-
-	public static void main(String[] args)
-			throws NumberFormatException, HeadlessException, IOException, NoSuchAlgorithmException{
-
-		/*String koor = "-0.23, 574.34";
-		
-		String numberPattern = "(-)?\\d+(\\.\\d+)?";
-		String wholePattern = numberPattern + "\\s*(,)\\s*" + numberPattern;
-		
-		boolean match = koor.matches(wholePattern);
-		System.out.println(match);
-		
-		if(match){
-			Pattern p = Pattern.compile(numberPattern);
-			Matcher m = p.matcher(koor);
-			while(m.find()){
-				System.out.println(m.group() + " -> " + parseToCoordinate(m.group()));
-			}
-		}
-		
-		if(koor.matches(wholePattern)){
-			Pattern p = Pattern.compile(numberPattern);
-			Matcher m = p.matcher(koor);
-			
-			m.find();
-			double lat = Double.parseDouble(m.group());
-			m.find();
-			double lng = Double.parseDouble(m.group());
-			
-			Printer.print(lat);
-			Printer.print(", ");
-			Printer.print(lng);
-		}*/
+	public static void main(String[] args) throws NumberFormatException, HeadlessException{
 
 		// CuttingRod.test();
 
@@ -67,7 +16,7 @@ public class Casual{
 
 		// System.out.print(calcPostFix("2352-*7/+2-822/*+"));
 
-		// Parser.test();
+		// ExpressionEvaluator.test();
 
 		// Queue.test();
 
@@ -100,30 +49,95 @@ public class Casual{
 		// QRCodeDisplay.test();
 
 		// testLambdaExp();
-		
+
 		// getGeometricTriangles();
+
+		// PrimeFactor.test();
+
+		int sumOfAll = sum(6,8,3);
 		
-		
+		System.out.println(sumOfAll);
+
+		System.out.println("hello");
+	}
+
+	public static int sum(int... values){
+		int sum = 0;
+		for(int i: values){
+			sum += i;
+		}
+		return sum;
+	}
+
+	public static void report(Runnable func){
+		long currentNano = System.currentTimeMillis();
+
+		func.run();
+
+		System.out.printf("The operation took %d miliseconds", (System.currentTimeMillis() - currentNano));
+	}
+
+	public static String bigIntMul(String a, String b){
+		int[] aints = stringToInts(a);
+		int[] bints = stringToInts(b);
+		int carry = 0;
+
+		char[] resultChars = new char[aints.length + bints.length];
+
+		for(int i = 0; i < resultChars.length - 1; i++){
+
+			int result = carry;
+			for(int j = 0; j <= i; j++){
+				int aindex = j;
+				int bindex = i - j;
+
+				if(aindex < aints.length && bindex < bints.length)
+					result += aints[aints.length - 1 - aindex] * bints[bints.length - 1 - bindex];
+			}
+
+			int div = result / 10;
+			int rem = result % 10;
+
+			carry = div;
+			resultChars[resultChars.length - 1 - i] = (char)(rem + '0');
+		}
+
+		resultChars[0] = (char)(carry + '0');
+
+		return new String(resultChars);
+	}
+
+	private static int[] stringToInts(String x){
+		int[] ints = new int[x.length()];
+		for(int i = 0; i < x.length(); i++)
+			ints[i] = x.charAt(i) - '0';
+		return ints;
+	}
+
+	public static <T> T[] appendArray(T[] arr, T object){
+		T[] newarr = Arrays.copyOf(arr, arr.length + 1);
+
+		newarr[arr.length] = object;
+
+		return newarr;
 	}
 
 	private static void getGeometricTriangles(){
-		HashMap<Integer, String> set = new HashMap<>();
-		
-		for(int i = 2; i < 2000 ; i++){
-			int iSq = i*i;
-			
+		HashMap<Integer, String> table = new HashMap<>();
+
+		for(int i = 2; i < 2000; i++){
+			int iSq = i * i;
+
 			for(int j = i - 1; j > 0; j--){
-				int diff = iSq - j*j;
-				
+				int diff = iSq - j * j;
+
 				String repres = i + " - " + j;
-				
-				String value = set.get(diff);
-				
-				if(value != null){
-					System.out.println(value + " and " + repres + " are matches");
-				}
-				
-				set.put(diff, repres);
+
+				String value = table.get(diff);
+
+				if(value != null){}
+
+				table.put(diff, repres);
 			}
 		}
 	}
@@ -131,8 +145,7 @@ public class Casual{
 	private static void testLambdaExp(){
 		Integer[] myList = { 3, 38, 28, 10 };
 
-		Arrays.stream(myList).filter(x -> x > 10).map(x -> Integer.toString(x)).sorted()
-				.forEach(System.out::println);
+		Arrays.stream(myList).filter(x -> x > 10).map(x -> Integer.toString(x)).sorted().forEach(System.out::println);
 	}
 
 	public static Iterable<Character> asCharIterable(final String s){
@@ -167,7 +180,7 @@ public class Casual{
 	public static String toBitString(int x){
 		StringBuilder stringBuilder = new StringBuilder();
 
-		for(Integer i: Lazy.range(32)){
+		for(Integer i: util.Lazy.range(32)){
 			int last = (x >> (31 - i)) & 1;
 			stringBuilder.append((char)(last + '0'));
 		}
@@ -179,8 +192,8 @@ public class Casual{
 		Stack<Integer> stack = new Stack<Integer>();
 
 		for(char c: postFixText.toCharArray()){
-			if(CharUtil.isInt(c)){
-				stack.push(CharUtil.toInt(c));
+			if(util.CharUtil.isInt(c)){
+				stack.push(util.CharUtil.toInt(c));
 			}
 			else{
 				int var2 = stack.pop();
@@ -211,21 +224,4 @@ public class Casual{
 			throw new java.util.EmptyStackException();
 	}
 
-	public static double parseToCoordinate(String s){
-		try{
-			return Double.parseDouble(s);
-		}
-		catch(NumberFormatException e){
-			if(s.contains(","))
-				return Double.parseDouble(s.replaceAll(",", "."));
-			else if(s.contains(" ")){
-				String[] sub = s.split(" ");
-				double result = Double.parseDouble(sub[0]);
-				result %= 360;
-				// TODO
-				return result;
-			}
-			return Double.NaN;
-		}
-	}
 }

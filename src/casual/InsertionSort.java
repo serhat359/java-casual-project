@@ -12,15 +12,15 @@ public class InsertionSort{
 		ASCENDING, DESCENDING;
 	}
 
-	public static <T extends Comparable<T>>void sort(T[] array){
+	public static <T extends Comparable<T>> void sort(T[] array){
 		sort(array, Mode.ASCENDING);
 	}
 
-	public static <T>void sort(T[] array, Comparator<T> comparator){
+	public static <T> void sort(T[] array, Comparator<T> comparator){
 		sort(array, comparator, Mode.ASCENDING);
 	}
 
-	public static <T extends Comparable<T>>void sort(T[] array, Mode mode){
+	public static <T extends Comparable<T>> void sort(T[] array, Mode mode){
 		Comparator<T> comparator = new Comparator<T>(){
 			@Override
 			public int compare(T o1, T o2){
@@ -31,7 +31,7 @@ public class InsertionSort{
 		sort(array, comparator, mode);
 	}
 
-	public static <T>void sort(T[] array, Comparator<T> comparator, Mode mode){
+	public static <T> void sort(T[] array, Comparator<T> comparator, Mode mode){
 		boolean descending = mode == Mode.DESCENDING;
 
 		for(int i = 1; i < array.length; i++){
@@ -46,7 +46,7 @@ public class InsertionSort{
 			array[j] = tbs;
 		}
 	}
-	
+
 	public static void test(){
 		Integer[] tbs = { 1, 5, 1, 4, 5, 4, 3, 7, 3, 8, 7, 8 };
 		InsertionSort.sort(tbs, InsertionSort.Mode.DESCENDING);

@@ -17,6 +17,12 @@ public class MyLinkedList<T>{
 		addAll(l);
 	}
 
+	public MyLinkedList(Iterable<T> items){
+		for(T item: items){
+			add(item);
+		}
+	}
+	
 	public MyLinkedList(T t){
 		add(t);
 	}

@@ -15,7 +15,7 @@ public class Printer{
 				return t == null ? "null" : t.toString();
 			}
 		};
-		
+
 		print(col, format);
 	}
 
@@ -30,15 +30,15 @@ public class Printer{
 			System.out.print(o);
 	}
 
-	public static <T>void print(T[] ar){
+	public static <T> void print(T[] ar){
 		print(Lazy.asIterable(ar));
 	}
 
-	public static <T>void print(T[] ar, PrintFormat<T> format){
+	public static <T> void print(T[] ar, PrintFormat<T> format){
 		print(Lazy.asIterable(ar), format);
 	}
-	
-	public static <T>void print(Iterable<T> col, PrintFormat<T> format){
+
+	public static <T> void print(Iterable<T> col, PrintFormat<T> format){
 		Iterator<T> it = col.iterator();
 
 		print("{");
