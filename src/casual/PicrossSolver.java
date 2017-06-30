@@ -3,6 +3,7 @@ package casual;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -85,12 +86,69 @@ public class PicrossSolver{
 			processMaxValues(picture, upColumn, leftColumn);
 			isChangeDetected |= testPicture(picture);
 
+			// serideki çarpýlarla ayrýlmýþ kýsýmlarý bulup iþliyor
+			// processDividedParts(picture, upColumn, leftColumn);
+			isChangeDetected |= testPicture(picture);
+
 			if(!isChangeDetected){
 				break;
 			}
 		}
 
 		System.out.println("There was no change after the iteration: " + iteration);
+	}
+
+	private static void processDividedParts(int[][] picture, int[][] upColumn, int[][] leftColumn){
+
+		for(int col = 0; col < colCount; col++){
+
+			int[] values = upColumn[col];
+			// TODO Auto-generated method stub
+		}
+
+		for(int row = 0; row < rowCount; row++){
+
+			int[] values = leftColumn[row];
+
+			ArrayList<Range> dividedParts = new ArrayList<>();
+
+			int nonEmpty = -1;
+			for(int i = 0; i < colCount; i++){
+				int cell = picture[row][i];
+
+				if(cell != EMPTY && nonEmpty < 0){
+					nonEmpty = i;
+				}
+				else if(cell == EMPTY && i - 1 >= 0 && picture[row][i - 1] != EMPTY && nonEmpty >= 0){
+					dividedParts.add(new PicrossSolver().new Range(nonEmpty, i - 1));
+					nonEmpty = -1;
+				}
+			}
+
+			if(nonEmpty > 0){
+				dividedParts.add(new PicrossSolver().new Range(nonEmpty, colCount - 1));
+				nonEmpty = -1;
+			}
+
+			if(dividedParts.size() == values.length){
+				int i = 0;
+				for(Range range: dividedParts){
+					int val = values[i];
+					int rangeVal = range.end - range.start + 1;
+					int reach = rangeVal - val;
+
+					for(int j = range.start + reach; j < range.end - reach + 1; j++){
+						if(j == 10){
+							display(picture);
+							debug();
+						}
+						picture[row][j] = FILLED;
+					}
+					
+					i++;
+				}
+			}
+		}
 	}
 
 	private static void processMaxValues(int[][] picture, int[][] upColumn, int[][] leftColumn){
@@ -774,6 +832,21 @@ public class PicrossSolver{
 	// TODO remove this function when it's over
 	private static void debug(){
 		System.currentTimeMillis();
+	}
+
+	class Range{
+		public int start;
+		public int end;
+
+		public Range(int start, int end){
+			super();
+			this.start = start;
+			this.end = end;
+		}
+
+		public String toString(){
+			return "{start: " + start + ", end: " + end + "}";
+		}
 	}
 
 	class Display extends JPanel{
