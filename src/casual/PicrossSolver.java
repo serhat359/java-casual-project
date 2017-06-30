@@ -3,7 +3,6 @@ package casual;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -13,38 +12,41 @@ public class PicrossSolver{
 	final static int FILLED = 1;
 	final static int EMPTY = 2;
 
+	final static int rowCount = 10;
+	final static int colCount = 10;
+	
 	public static void test(){
-		ArrayList<Integer[]> upColumn = new ArrayList<>();
-		upColumn.add(arr(3, 1));
-		upColumn.add(arr(2, 1, 1));
-		upColumn.add(arr(3, 1, 1));
-		upColumn.add(arr(8));
-		upColumn.add(arr(3, 3));
-		upColumn.add(arr(2, 2, 1, 1));
-		upColumn.add(arr(4, 2));
-		upColumn.add(arr(8, 1));
-		upColumn.add(arr(1, 5));
-		upColumn.add(arr(2, 1, 1, 1));
+		int[][] upColumn = new int[colCount][];
+		upColumn[0] = (arr(3, 1));
+		upColumn[1] = (arr(2, 1, 1));
+		upColumn[2] = (arr(3, 1, 1));
+		upColumn[3] = (arr(8));
+		upColumn[4] = (arr(3, 3));
+		upColumn[5] = (arr(2, 2, 1, 1));
+		upColumn[6] = (arr(4, 2));
+		upColumn[7] = (arr(8, 1));
+		upColumn[8] = (arr(1, 5));
+		upColumn[9] = (arr(2, 1, 1, 1));
 
-		ArrayList<Integer[]> leftColumn = new ArrayList<>();
-		leftColumn.add(arr(4));
-		leftColumn.add(arr(6, 1));
-		leftColumn.add(arr(8));
-		leftColumn.add(arr(4, 3));
-		leftColumn.add(arr(1, 1, 1, 3));
-		leftColumn.add(arr(1, 1, 1, 2));
-		leftColumn.add(arr(1, 3, 3));
-		leftColumn.add(arr(1, 5, 1));
-		leftColumn.add(arr(1, 3));
-		leftColumn.add(arr(1, 1, 1, 1));
+		int[][] leftColumn = new int[rowCount][];
+		leftColumn[0] = (arr(4));
+		leftColumn[1] = (arr(6, 1));
+		leftColumn[2] = (arr(8));
+		leftColumn[3] = (arr(4, 3));
+		leftColumn[4] = (arr(1, 1, 1, 3));
+		leftColumn[5] = (arr(1, 1, 1, 2));
+		leftColumn[6] = (arr(1, 3, 3));
+		leftColumn[7] = (arr(1, 5, 1));
+		leftColumn[8] = (arr(1, 3));
+		leftColumn[9] = (arr(1, 1, 1, 1));
 
 		solveAndDisplay(upColumn, leftColumn);
 	}
 
-	private static void solveAndDisplay(ArrayList<Integer[]> upColumn, ArrayList<Integer[]> leftColumn){
+	private static void solveAndDisplay(int[][] upColumn, int[][] leftColumn){
 
-		int colCount = upColumn.size();
-		int rowCount = leftColumn.size();
+		int colCount = upColumn.length;
+		int rowCount = leftColumn.length;
 
 		int[][] picture = new int[rowCount][colCount];
 
@@ -53,18 +55,18 @@ public class PicrossSolver{
 		display(picture);
 	}
 
-	private static void solve(int[][] picture, ArrayList<Integer[]> upColumn, ArrayList<Integer[]> leftColumn){
+	private static void solve(int[][] picture, int[][] upColumn, int[][] leftColumn){
 		processInitial(picture, upColumn, leftColumn);
 		processSingles(picture, upColumn, leftColumn);
 	}
 
-	private static void processSingles(int[][] picture, ArrayList<Integer[]> upColumn, ArrayList<Integer[]> leftColumn){
-		int rowCount = leftColumn.size();
-		int colCount = upColumn.size();
+	private static void processSingles(int[][] picture, int[][] upColumn, int[][] leftColumn){
+		int rowCount = leftColumn.length;
+		int colCount = upColumn.length;
 
 		// Fill in betweens for each column
 		for(int col = 0; col < colCount; col++){
-			Integer[] values = upColumn.get(col);
+			int[] values = upColumn[col];
 			int count = values.length;
 
 			if(count == 1){
@@ -98,7 +100,7 @@ public class PicrossSolver{
 
 		// Fill in betweens for each row
 		for(int row = 0; row < rowCount; row++){
-			Integer[] values = leftColumn.get(row);
+			int[] values = leftColumn[row];
 			int count = values.length;
 
 			if(count == 1){
@@ -131,57 +133,57 @@ public class PicrossSolver{
 		}
 	}
 
-	private static void processInitial(int[][] picture, ArrayList<Integer[]> upColumn, ArrayList<Integer[]> leftColumn){
-		int rowCount = leftColumn.size();
-		int colCount = upColumn.size();
+	private static void processInitial(int[][] picture, int[][] upColumn, int[][] leftColumn){
+		int rowCount = leftColumn.length;
+		int colCount = upColumn.length;
 
 		for(int col = 0; col < colCount; col++){
-			Integer[] values = upColumn.get(col);
+			int[] values = upColumn[col];
 
 			int sum = values.length - 1;
 
-			for(Integer integer: values){
-				sum += integer;
+			for(int elem: values){
+				sum += elem;
 			}
 
 			int rem = rowCount - sum;
 
 			int formerSize = 0;
 			for(int i = 0; i < values.length; i++){
-				Integer integer = values[i];
+				int elem = values[i];
 
-				int diff = integer - rem;
+				int diff = elem - rem;
 
 				if(diff > 0){
 					for(int j = 0; j < diff; j++)
 						picture[j + rem + formerSize][col] = FILLED;
 				}
-				formerSize += 1 + integer;
+				formerSize += 1 + elem;
 			}
 		}
 
 		for(int row = 0; row < rowCount; row++){
-			Integer[] values = leftColumn.get(row);
+			int[] values = leftColumn[row];
 
 			int sum = values.length - 1;
 
-			for(Integer integer: values){
-				sum += integer;
+			for(int elem: values){
+				sum += elem;
 			}
 
 			int rem = colCount - sum;
 
 			int formerSize = 0;
 			for(int i = 0; i < values.length; i++){
-				Integer integer = values[i];
+				int elem = values[i];
 
-				int diff = integer - rem;
+				int diff = elem - rem;
 
 				if(diff > 0){
 					for(int j = 0; j < diff; j++)
 						picture[row][j + rem + formerSize] = FILLED;
 				}
-				formerSize += 1 + integer;
+				formerSize += 1 + elem;
 			}
 		}
 	}
@@ -198,7 +200,7 @@ public class PicrossSolver{
 		frame.setLayout(null);
 	}
 
-	private static Integer[] arr(Integer... values){
+	private static int[] arr(int... values){
 		return values;
 	}
 
