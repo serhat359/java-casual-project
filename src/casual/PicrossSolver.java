@@ -86,8 +86,12 @@ public class PicrossSolver{
 			processMaxValues(picture, upColumn, leftColumn);
 			isChangeDetected |= testPicture(picture);
 
-			// serideki çarpýlarla ayrýlmýþ kýsýmlarý bulup iþliyor
+			// serideki çarpýlarla ayrýlmýþ kýsýmlarý bulup iþliyor, tasarým hatasýndan dolayý kaldýrýldý
 			// processDividedParts(picture, upColumn, leftColumn);
+			isChangeDetected |= testPicture(picture);
+
+			// serideki dolu ve boþ sayýlarýný kontrol ediyor
+			processCheckAllCounts(picture, upColumn, leftColumn);
 			isChangeDetected |= testPicture(picture);
 
 			if(!isChangeDetected){
@@ -96,6 +100,77 @@ public class PicrossSolver{
 		}
 
 		System.out.println("There was no change after the iteration: " + iteration);
+	}
+
+	private static void processCheckAllCounts(int[][] picture, int[][] upColumn, int[][] leftColumn){
+
+		for(int col = 0; col < colCount; col++){
+
+			int[] values = upColumn[col];
+
+			// TODO bunun için tablo oluþtur
+			int supposedFilledCount = getSum(values);
+			int supposedEmptyCount = rowCount - supposedFilledCount;
+
+			int actualFilledCount = 0;
+			int actualEmptyCount = 0;
+
+			for(int i = 0; i < rowCount; i++){
+				int cell = picture[i][col];
+
+				if(cell == FILLED)
+					actualFilledCount++;
+				else if(cell == EMPTY)
+					actualEmptyCount++;
+				else{}
+			}
+
+			if(supposedFilledCount == actualFilledCount && supposedEmptyCount == actualEmptyCount){}
+			else if(supposedFilledCount == actualFilledCount){
+				for(int i = 0; i < rowCount; i++)
+					if(picture[i][col] == UNKNOWN)
+						picture[i][col] = EMPTY;
+			}
+			else if(supposedEmptyCount == actualEmptyCount){
+				for(int i = 0; i < rowCount; i++)
+					if(picture[i][col] == UNKNOWN)
+						picture[i][col] = FILLED;
+			}
+		}
+
+		for(int row = 0; row < rowCount; row++){
+
+			int[] values = leftColumn[row];
+
+			// TODO bunun için tablo oluþtur
+			int supposedFilledCount = getSum(values);
+			int supposedEmptyCount = colCount - supposedFilledCount;
+
+			int actualFilledCount = 0;
+			int actualEmptyCount = 0;
+
+			for(int i = 0; i < colCount; i++){
+				int cell = picture[row][i];
+
+				if(cell == FILLED)
+					actualFilledCount++;
+				else if(cell == EMPTY)
+					actualEmptyCount++;
+				else{}
+			}
+
+			if(supposedFilledCount == actualFilledCount && supposedEmptyCount == actualEmptyCount){}
+			else if(supposedFilledCount == actualFilledCount){
+				for(int i = 0; i < colCount; i++)
+					if(picture[row][i] == UNKNOWN)
+						picture[row][i] = EMPTY;
+			}
+			else if(supposedEmptyCount == actualEmptyCount){
+				for(int i = 0; i < colCount; i++)
+					if(picture[row][i] == UNKNOWN)
+						picture[row][i] = FILLED;
+			}
+		}
 	}
 
 	private static void processDividedParts(int[][] picture, int[][] upColumn, int[][] leftColumn){
@@ -483,6 +558,15 @@ public class PicrossSolver{
 		}
 
 		return maxValue;
+	}
+
+	private static int getSum(int[] values){
+		int sum = 0;
+
+		for(int i = 0; i < values.length; i++)
+			sum += values[i];
+
+		return sum;
 	}
 
 	private static void processStartsAndEnds(int[][] picture, int[][] upColumn, int[][] leftColumn){
