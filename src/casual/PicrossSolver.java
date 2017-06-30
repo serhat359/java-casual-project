@@ -59,9 +59,109 @@ public class PicrossSolver{
 		processSingles(picture, upColumn, leftColumn);
 
 		processStartsAndEnds(picture, upColumn, leftColumn);
+
+		processSetEmptiesByMax(picture, upColumn, leftColumn);
+	}
+
+	private static void processSetEmptiesByMax(int[][] picture, int[][] upColumn, int[][] leftColumn){
+		for(int col = 0; col < colCount; col++){
+			int[] values = upColumn[col];
+			
+			// TODO generate table for this
+			int maxValue = getMaxValue(values);
+
+			int first = -1;
+
+			for(int i = 0; i < rowCount; i++){
+				if(picture[i][col] != FILLED)
+					continue;
+				else{
+					first = i;
+
+					int last = i;
+
+					for(i++; i < rowCount; i++){
+						if(picture[i][col] == FILLED)
+							last = i;
+						else
+							break;
+					}
+
+					int size = last - first + 1;
+					if(size == maxValue){
+						int leftEmptyRow = first - 1;
+						int rightEmptyRow = last + 1;
+
+						if(leftEmptyRow >= 0)
+							picture[leftEmptyRow][col] = EMPTY;
+
+						if(rightEmptyRow <= lastRow)
+							picture[rightEmptyRow][col] = EMPTY;
+					}
+
+					i--;
+				}
+			}
+		}
+
+		for(int row = 0; row < rowCount; row++){
+			int[] values = leftColumn[row];
+
+			// TODO generate table for this
+			int maxValue = getMaxValue(values);
+
+			int first = -1;
+
+			for(int i = 0; i < colCount; i++){
+				if(picture[row][i] != FILLED)
+					continue;
+				else{
+					first = i;
+
+					int last = i;
+
+					for(i++; i < colCount; i++){
+						if(picture[row][i] == FILLED)
+							last = i;
+						else
+							break;
+					}
+
+					int size = last - first + 1;
+					if(size == maxValue){
+						int leftEmptyCol = first - 1;
+						int rightEmptyCol = last + 1;
+
+						if(leftEmptyCol >= 0)
+							picture[row][leftEmptyCol] = EMPTY;
+
+						if(rightEmptyCol <= lastCol)
+							picture[row][rightEmptyCol] = EMPTY;
+					}
+
+					i--;
+				}
+			}
+		}
+	}
+
+	private static int getMaxValue(int[] values){
+		int maxIndex = 0;
+		int maxValue = values[maxIndex];
+
+		for(int i = 1; i < values.length; i++){
+			if(values[i] > maxValue){
+				maxIndex = i;
+				maxValue = values[maxIndex];
+			}
+		}
+
+		return maxValue;
 	}
 
 	private static void processStartsAndEnds(int[][] picture, int[][] upColumn, int[][] leftColumn){
+
+		// TODO this function only processes starts, not ends
 
 		for(int col = 0; col < colCount; col++){
 
@@ -363,6 +463,7 @@ public class PicrossSolver{
 		return values;
 	}
 
+	// TODO remove this function when it's over
 	private static void debug(){
 	}
 
