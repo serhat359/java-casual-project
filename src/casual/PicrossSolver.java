@@ -9,6 +9,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class PicrossSolver{
+	final static int UNKNOWN = 0;
+	final static int FILLED = 1;
+	final static int EMPTY = 2;
+
 	public static void test(){
 		ArrayList<Integer[]> upColumn = new ArrayList<>();
 		upColumn.add(arr(3, 1));
@@ -42,49 +46,147 @@ public class PicrossSolver{
 		int colCount = upColumn.size();
 		int rowCount = leftColumn.size();
 
-		Boolean[][] picture = new Boolean[rowCount][colCount];
+		int[][] picture = new int[rowCount][colCount];
 
 		solve(picture, upColumn, leftColumn);
 
 		display(picture);
 	}
 
-	private static void solve(Boolean[][] picture, ArrayList<Integer[]> upColumn, ArrayList<Integer[]> leftColumn){
+	private static void solve(int[][] picture, ArrayList<Integer[]> upColumn, ArrayList<Integer[]> leftColumn){
+		processInitial(picture, upColumn, leftColumn);
+		processSingles(picture, upColumn, leftColumn);
+	}
+
+	private static void processSingles(int[][] picture, ArrayList<Integer[]> upColumn, ArrayList<Integer[]> leftColumn){
+		int rowCount = leftColumn.size();
+		int colCount = upColumn.size();
+
+		// Fill in betweens for each column
+		for(int col = 0; col < colCount; col++){
+			Integer[] values = upColumn.get(col);
+			int count = values.length;
+
+			if(count == 1){
+				int firstFilled = -1;
+				int lastFilled = -1;
+
+				int i;
+
+				for(i = 0; i < rowCount; i++){
+					int val = picture[i][col];
+
+					if(val == FILLED){
+						firstFilled = i;
+						break;
+					}
+				}
+
+				for(int j = rowCount - 1; j >= i; j--){
+					int val = picture[i][col];
+
+					if(val == FILLED){
+						lastFilled = i;
+						break;
+					}
+				}
+
+				for(int k = firstFilled + 1; k < lastFilled; k++)
+					picture[k][col] = FILLED;
+			}
+		}
+
+		// Fill in betweens for each row
+		for(int row = 0; row < rowCount; row++){
+			Integer[] values = leftColumn.get(row);
+			int count = values.length;
+
+			if(count == 1){
+				int firstFilled = -1;
+				int lastFilled = -1;
+
+				int i;
+
+				for(i = 0; i < colCount; i++){
+					int val = picture[row][i];
+
+					if(val == FILLED){
+						firstFilled = i;
+						break;
+					}
+				}
+
+				for(int j = colCount - 1; j >= i; j--){
+					int val = picture[row][i];
+
+					if(val == FILLED){
+						lastFilled = i;
+						break;
+					}
+				}
+
+				for(int k = firstFilled + 1; k < lastFilled; k++)
+					picture[row][k] = FILLED;
+			}
+		}
+	}
+
+	private static void processInitial(int[][] picture, ArrayList<Integer[]> upColumn, ArrayList<Integer[]> leftColumn){
 		int rowCount = leftColumn.size();
 		int colCount = upColumn.size();
 
 		for(int col = 0; col < colCount; col++){
 			Integer[] values = upColumn.get(col);
-			
+
 			int sum = values.length - 1;
-			
+
 			for(Integer integer: values){
 				sum += integer;
 			}
-			
+
 			int rem = rowCount - sum;
-			
+
 			int formerSize = 0;
 			for(int i = 0; i < values.length; i++){
 				Integer integer = values[i];
-				
-				int diff = integer - rem; 
-				
+
+				int diff = integer - rem;
+
 				if(diff > 0){
 					for(int j = 0; j < diff; j++)
-						picture[j + rem + formerSize][col] = true;
+						picture[j + rem + formerSize][col] = FILLED;
 				}
 				formerSize += 1 + integer;
 			}
 		}
 
 		for(int row = 0; row < rowCount; row++){
+			Integer[] values = leftColumn.get(row);
 
+			int sum = values.length - 1;
+
+			for(Integer integer: values){
+				sum += integer;
+			}
+
+			int rem = colCount - sum;
+
+			int formerSize = 0;
+			for(int i = 0; i < values.length; i++){
+				Integer integer = values[i];
+
+				int diff = integer - rem;
+
+				if(diff > 0){
+					for(int j = 0; j < diff; j++)
+						picture[row][j + rem + formerSize] = FILLED;
+				}
+				formerSize += 1 + integer;
+			}
 		}
-
 	}
 
-	private static void display(Boolean[][] picture){
+	private static void display(int[][] picture){
 		Display panel = new PicrossSolver().new Display(picture);
 
 		JFrame frame = new JFrame("Game of Life");
@@ -102,9 +204,9 @@ public class PicrossSolver{
 
 	class Display extends JPanel{
 		private static final long serialVersionUID = 4182312706498893369L;
-		private Boolean[][] picture;
+		private int[][] picture;
 
-		public Display(Boolean[][] picture){
+		public Display(int[][] picture){
 			this.picture = picture;
 		}
 
@@ -122,19 +224,19 @@ public class PicrossSolver{
 
 				for(int col = 0; col < picture[0].length; col++){
 
-					Boolean value = picture[row][col];
+					int value = picture[row][col];
 
-					if(value == null){
+					if(value == UNKNOWN){
 						Color color = Color.WHITE;
 						g2d.setColor(color);
 						g2d.fillRect(col * size, row * size, size, size);
 					}
-					else if(value == true){
+					else if(value == FILLED){
 						Color color = Color.BLACK;
 						g2d.setColor(color);
 						g2d.fillRect(col * size, row * size, size, size);
 					}
-					else if(value == false){
+					else if(value == EMPTY){
 						g2d.setColor(Color.DARK_GRAY);
 						int xOffset = col * size;
 						int yOffset = row * size;
