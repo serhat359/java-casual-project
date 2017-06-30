@@ -14,7 +14,9 @@ public class PicrossSolver{
 
 	final static int rowCount = 10;
 	final static int colCount = 10;
-	
+	final static int lastRow = rowCount - 1;
+	final static int lastCol = colCount - 1;
+
 	public static void test(){
 		int[][] upColumn = new int[colCount][];
 		upColumn[0] = (arr(3, 1));
@@ -44,10 +46,6 @@ public class PicrossSolver{
 	}
 
 	private static void solveAndDisplay(int[][] upColumn, int[][] leftColumn){
-
-		int colCount = upColumn.length;
-		int rowCount = leftColumn.length;
-
 		int[][] picture = new int[rowCount][colCount];
 
 		solve(picture, upColumn, leftColumn);
@@ -61,9 +59,6 @@ public class PicrossSolver{
 	}
 
 	private static void processSingles(int[][] picture, int[][] upColumn, int[][] leftColumn){
-		int rowCount = leftColumn.length;
-		int colCount = upColumn.length;
-
 		// Fill in betweens for each column
 		for(int col = 0; col < colCount; col++){
 			int[] values = upColumn[col];
@@ -84,7 +79,7 @@ public class PicrossSolver{
 					}
 				}
 
-				for(int j = rowCount - 1; j >= i; j--){
+				for(int j = lastRow; j >= i; j--){
 					int val = picture[i][col];
 
 					if(val == FILLED){
@@ -95,6 +90,51 @@ public class PicrossSolver{
 
 				for(int k = firstFilled + 1; k < lastFilled; k++)
 					picture[k][col] = FILLED;
+
+				// Above is for filling in betweens
+				// Below is for finding reaching
+
+				// DEBUG
+				// old variables: firstFilled = 7, lastFilled = 7, filledSize = 1, reach = 3
+				// new variables: firstFilled = 6, lastFilled = 7, filledSize = 2, reach = 2
+
+				if(firstFilled >= 0){
+					int filledSize = lastFilled - firstFilled + 1;
+					int reach = values[0] - filledSize;
+
+					int marginStart = reach - firstFilled;
+					if(marginStart > 0){
+						for(int k = 0; k < marginStart; k++){
+							picture[firstFilled + 1 + k][col] = FILLED;
+						}
+					}
+					else
+						marginStart = 0;
+
+					int marginEnd = lastFilled + reach - lastRow;
+					if(marginEnd > 0){
+						for(int k = 0; k < marginEnd; k++){
+							picture[lastFilled - 1 - k][col] = FILLED;
+						}
+					}
+					else
+						marginEnd = 0;
+
+					// Above is for filling reaching
+					// Below is for setting empties
+
+					// Update variables
+					firstFilled -= marginEnd;
+					lastFilled += marginStart;
+					filledSize += marginEnd + marginStart;
+					reach = values[0] - filledSize;
+
+					for(int k = 0; k < firstFilled - reach; k++)
+						picture[k][col] = EMPTY;
+
+					for(int k = lastFilled + reach + 1; k < rowCount; k++)
+						picture[k][col] = EMPTY;
+				}
 			}
 		}
 
@@ -118,7 +158,7 @@ public class PicrossSolver{
 					}
 				}
 
-				for(int j = colCount - 1; j >= i; j--){
+				for(int j = lastCol; j >= i; j--){
 					int val = picture[row][i];
 
 					if(val == FILLED){
@@ -129,14 +169,53 @@ public class PicrossSolver{
 
 				for(int k = firstFilled + 1; k < lastFilled; k++)
 					picture[row][k] = FILLED;
+
+				// Above is for filling in betweens
+				// Below is for finding reaching
+
+				if(firstFilled >= 0){
+					int filledSize = lastFilled - firstFilled + 1;
+					int reach = values[0] - filledSize;
+
+					int marginStart = reach - firstFilled;
+					if(marginStart > 0){
+						for(int k = 0; k < marginStart; k++){
+							picture[row][firstFilled + 1 + k] = FILLED;
+						}
+					}
+					else
+						marginStart = 0;
+
+					int marginEnd = lastFilled + reach - lastCol;
+					if(marginEnd > 0){
+						for(int k = 0; k < marginEnd; k++){
+							picture[row][lastFilled - 1 - k] = FILLED;
+						}
+					}
+					else
+						marginEnd = 0;
+
+					// Above is for filling reaching
+					// Below is for setting empties
+
+					// Update variables
+					firstFilled -= marginEnd;
+					lastFilled += marginStart;
+					filledSize += marginEnd + marginStart;
+					reach = values[0] - filledSize;
+
+					for(int k = 0; k < firstFilled - reach; k++)
+						picture[row][k] = EMPTY;
+
+					for(int k = lastFilled + reach + 1; k < colCount; k++)
+						picture[row][k] = EMPTY;
+				}
+
 			}
 		}
 	}
 
 	private static void processInitial(int[][] picture, int[][] upColumn, int[][] leftColumn){
-		int rowCount = leftColumn.length;
-		int colCount = upColumn.length;
-
 		for(int col = 0; col < colCount; col++){
 			int[] values = upColumn[col];
 
