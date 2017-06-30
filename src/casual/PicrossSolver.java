@@ -144,7 +144,7 @@ public class PicrossSolver{
 						}
 						picture[row][j] = FILLED;
 					}
-					
+
 					i++;
 				}
 			}
@@ -492,7 +492,8 @@ public class PicrossSolver{
 			int[] values = upColumn[col];
 			int valuesIndex = 0;
 
-			for(int i = 0; i < rowCount; i++){
+			int i;
+			for(i = 0; i < rowCount; i++){
 				int cell = picture[i][col];
 
 				if(cell == UNKNOWN){
@@ -516,11 +517,47 @@ public class PicrossSolver{
 				}
 			}
 
+			// Below is for checking remaining unknown cells
+			boolean isAllUnknown = true;
+			for(int j = i; j < rowCount; j++)
+				if(picture[j][col] != UNKNOWN){
+					isAllUnknown = false;
+					break;
+				}
+
+			// isAllUnknown below
+			if(isAllUnknown){
+				int unknownSize = rowCount - i;
+				int valuesNewIndex = valuesIndex;
+
+				int sum = values.length - 1 - valuesIndex;
+				for(int j = valuesIndex; j < values.length; j++)
+					sum += values[j];
+
+				// TODO this needs range process optimization
+				if(unknownSize > 0 && sum == unknownSize){
+					for(int rowIndex = i, j = valuesNewIndex; j < values.length; j++, rowIndex++){
+						int val = values[j];
+
+						if(rowIndex - 1 >= 0)
+							picture[rowIndex - 1][col] = EMPTY;
+
+						for(int k = 0; k < val; k++)
+							picture[rowIndex++][col] = FILLED;
+					}
+				}
+				else if(unknownSize > 0 && valuesNewIndex == -1){
+					for(int k = 0; k <= i; k++)
+						picture[k][col] = EMPTY;
+				}
+			}
+
+			// Above is regular iteration
 			// Below is for reverse iteration
 
 			valuesIndex = values.length - 1;
 
-			for(int i = rowCount - 1; i >= 0; i--){
+			for(i = rowCount - 1; i >= 0; i--){
 				int cell = picture[i][col];
 
 				if(cell == UNKNOWN){
@@ -541,6 +578,41 @@ public class PicrossSolver{
 				}
 				else if(cell == EMPTY){
 
+				}
+			}
+
+			// Below is for checking remaining unknown cells
+			isAllUnknown = true;
+			for(int j = 0; j <= i; j++)
+				if(picture[j][col] != UNKNOWN){
+					isAllUnknown = false;
+					break;
+				}
+
+			// isAllUnknown below
+			if(isAllUnknown){
+				int unknownSize = i + 1;
+				int valuesNewIndex = valuesIndex;
+
+				int sum = valuesIndex;
+				for(int j = 0; j <= valuesNewIndex; j++)
+					sum += values[j];
+
+				// TODO this needs range process optimization
+				if(unknownSize > 0 && sum == unknownSize){
+					for(int rowIndex = 0, j = 0; j <= valuesNewIndex; j++, rowIndex++){
+						int val = values[j];
+
+						if(rowIndex - 1 >= 0)
+							picture[rowIndex - 1][col] = EMPTY;
+
+						for(int k = 0; k < val; k++)
+							picture[rowIndex++][col] = FILLED;
+					}
+				}
+				else if(unknownSize > 0 && valuesNewIndex == -1){
+					for(int k = 0; k <= i; k++)
+						picture[k][col] = EMPTY;
 				}
 			}
 		}
@@ -550,7 +622,8 @@ public class PicrossSolver{
 			int[] values = leftColumn[row];
 			int valuesIndex = 0;
 
-			for(int i = 0; i < colCount; i++){
+			int i;
+			for(i = 0; i < colCount; i++){
 				int cell = picture[row][i];
 
 				if(cell == UNKNOWN){
@@ -574,11 +647,47 @@ public class PicrossSolver{
 				}
 			}
 
+			// Below is for checking remaining unknown cells
+			boolean isAllUnknown = true;
+			for(int j = i; j < colCount; j++)
+				if(picture[row][j] != UNKNOWN){
+					isAllUnknown = false;
+					break;
+				}
+
+			// isAllUnknown below
+			if(isAllUnknown){
+				int unknownSize = colCount - i;
+				int valuesNewIndex = valuesIndex;
+
+				int sum = values.length - 1 - valuesIndex; // CHANGE! sum = length - 1
+				for(int j = valuesIndex; j < values.length; j++)
+					sum += values[j];
+
+				// TODO this needs range process optimization
+				if(unknownSize > 0 && sum == unknownSize){
+					for(int colIndex = i, j = valuesNewIndex; j < values.length; j++, colIndex++){ // CHANGE colIndex++
+						int val = values[j];
+
+						if(colIndex - 1 >= 0)
+							picture[row][colIndex - 1] = EMPTY;
+
+						for(int k = 0; k < val; k++)
+							picture[row][colIndex++] = FILLED;
+					}
+				}
+				else if(unknownSize > 0 && valuesNewIndex == -1){
+					for(int k = 0; k <= i; k++)
+						picture[row][k] = EMPTY;
+				}
+			}
+
+			// Above is regular iteration
 			// Below is for reverse iteration
 
 			valuesIndex = values.length - 1;
 
-			for(int i = colCount - 1; i >= 0; i--){
+			for(i = colCount - 1; i >= 0; i--){
 				int cell = picture[row][i];
 
 				if(cell == UNKNOWN){
@@ -599,6 +708,41 @@ public class PicrossSolver{
 				}
 				else if(cell == EMPTY){
 
+				}
+			}
+
+			// Below is for checking remaining unknown cells
+			isAllUnknown = true;
+			for(int j = 0; j <= i; j++)
+				if(picture[row][j] != UNKNOWN){
+					isAllUnknown = false;
+					break;
+				}
+
+			// isAllUnknown below
+			if(isAllUnknown){
+				int unknownSize = i + 1;
+				int valuesNewIndex = valuesIndex;
+
+				int sum = valuesIndex; // CHANGE! remove -1
+				for(int j = 0; j <= valuesNewIndex; j++) // CHANGE! put <=
+					sum += values[j];
+
+				// TODO this needs range process optimization
+				if(unknownSize > 0 && sum == unknownSize){
+					for(int colIndex = 0, j = 0; j <= valuesNewIndex; j++, colIndex++){ // CHANGE colIndex++ added
+						int val = values[j];
+
+						if(colIndex - 1 >= 0)
+							picture[row][colIndex - 1] = EMPTY;
+
+						for(int k = 0; k < val; k++)
+							picture[row][colIndex++] = FILLED;
+					}
+				}
+				else if(unknownSize > 0 && valuesNewIndex == -1){
+					for(int k = 0; k <= i; k++)
+						picture[row][k] = EMPTY;
 				}
 			}
 		}
