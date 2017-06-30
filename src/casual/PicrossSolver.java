@@ -65,16 +65,24 @@ public class PicrossSolver{
 
 			boolean isChangeDetected = false;
 
+			// tek sayý olanlarýn ara boþluðunu doldurup, ulaþamayacaðý yerlere çarpý atýyor
 			processSingles(picture, upColumn, leftColumn);
 			isChangeDetected |= testPicture(picture);
 
+			// seri baþýndan ve sonundan itibaren bir tarafý kapalý sayýlarýn kalanýný ayaralayýp çarpý atýyor
 			processStartsAndEnds(picture, upColumn, leftColumn);
 			isChangeDetected |= testPicture(picture);
 
+			// serilerdeki en büyük deðerler dolduysa baþýna ve sonuna çarpý atýyor
 			processSetEmptiesByMax(picture, upColumn, leftColumn);
 			isChangeDetected |= testPicture(picture);
 
+			// serilerdeki çarpý arasý boþluklarý boþlukla dolduruyor
 			processFillBetweenEmpties(picture, upColumn, leftColumn);
+			isChangeDetected |= testPicture(picture);
+
+			// serideki outlier olan deðere karþýlýk gelen dolmuþlarý iþliyor
+			processMaxValues(picture, upColumn, leftColumn);
 			isChangeDetected |= testPicture(picture);
 
 			if(!isChangeDetected){
@@ -85,11 +93,150 @@ public class PicrossSolver{
 		System.out.println("There was no change after the iteration: " + iteration);
 	}
 
+	private static void processMaxValues(int[][] picture, int[][] upColumn, int[][] leftColumn){
+		for(int col = 0; col < colCount; col++){
+
+			int[] values = upColumn[col];
+
+			if(values.length > 1){
+				int secondMaxValue = values[0];
+				int maxValue = values[0];
+
+				for(int i = 1; i < values.length; i++){
+					int val = values[i];
+
+					if(val > maxValue){
+						if(maxValue > secondMaxValue)
+							secondMaxValue = maxValue;
+
+						maxValue = val;
+					}
+				}
+
+				int filledIndex = -1;
+				int i = 0;
+
+				for(i = 0; i < rowCount; i++){
+					int cell = picture[i][col];
+
+					if(cell == FILLED && filledIndex < 0){
+						filledIndex = i;
+					}
+					else if(cell != FILLED && filledIndex >= 0){
+						int filledSize = i - filledIndex;
+						if(filledSize > secondMaxValue){
+							int filledEndIndex = i - 1;
+
+							int leftOfFilled = filledIndex - 1;
+							int rightOfFilled = filledEndIndex + 1;
+							if(leftOfFilled < 0 || picture[leftOfFilled][col] == EMPTY){
+								int k;
+								for(k = rightOfFilled; k < filledIndex + maxValue; k++){
+									picture[k][col] = FILLED;
+								}
+								if(k < rowCount)
+									picture[k][col] = EMPTY;
+
+								filledIndex = -1;
+							}
+							else if(rightOfFilled > lastRow || picture[rightOfFilled][col] == EMPTY){
+								int k;
+								for(k = leftOfFilled; k > filledEndIndex - maxValue; k--){
+									picture[k][col] = FILLED;
+								}
+								if(k > 0)
+									picture[k][col] = EMPTY;
+
+								filledIndex = -1;
+							}
+							else{
+								// TODO other process
+							}
+						}
+						else{
+							filledIndex = -1;
+						}
+					}
+				}
+			}
+		}
+
+		for(int row = 0; row < rowCount; row++){
+
+			int[] values = leftColumn[row];
+
+			if(values.length > 1){
+				int secondMaxValue = values[0];
+				int maxValue = values[0];
+
+				for(int i = 1; i < values.length; i++){
+					int val = values[i];
+
+					if(val > maxValue){
+						if(maxValue > secondMaxValue)
+							secondMaxValue = maxValue;
+
+						maxValue = val;
+					}
+				}
+
+				int filledIndex = -1;
+				int i = 0;
+
+				for(i = 0; i < colCount; i++){
+					int cell = picture[row][i];
+
+					if(cell == FILLED && filledIndex < 0){
+						filledIndex = i;
+					}
+					else if(cell != FILLED && filledIndex >= 0){
+						int filledSize = i - filledIndex;
+						if(filledSize > secondMaxValue){
+							int filledEndIndex = i - 1;
+
+							int leftOfFilled = filledIndex - 1;
+							int rightOfFilled = filledEndIndex + 1;
+							if(leftOfFilled < 0 || picture[row][leftOfFilled] == EMPTY){
+								int k;
+								for(k = rightOfFilled; k < filledIndex + maxValue; k++){
+									picture[row][k] = FILLED;
+								}
+								if(k < colCount)
+									picture[row][k] = EMPTY;
+
+								filledIndex = -1;
+							}
+							else if(rightOfFilled > lastCol || picture[row][rightOfFilled] == EMPTY){
+								int k;
+								for(k = leftOfFilled; k > filledEndIndex - maxValue; k--){
+									picture[row][k] = FILLED;
+								}
+								if(k > 0)
+									picture[row][k] = EMPTY;
+
+								filledIndex = -1;
+							}
+							else{
+								// TODO other process
+							}
+						}
+						else{
+							filledIndex = -1;
+						}
+					}
+				}
+			}
+		}
+	}
+
 	private static boolean testPicture(int[][] picture){
 		for(int i = 0; i < rowCount; i++)
 			for(int j = 0; j < colCount; j++)
-				if(pictureRef[i][j] != UNKNOWN && pictureRef[i][j] != picture[i][j])
-					throw new RuntimeException("Bi önceki metot yanlýþ çalýþýyor");
+				if(pictureRef[i][j] != UNKNOWN && pictureRef[i][j] != picture[i][j]){
+					display(pictureRef, "Old One");
+					display(picture);
+					throw new RuntimeException("Bi önceki metot yanlýþ çalýþýyor: " + iteration);
+				}
 
 		boolean isChangeDetected = false;
 
@@ -284,10 +431,6 @@ public class PicrossSolver{
 
 		for(int col = 0; col < colCount; col++){
 
-			// DEBUG
-			if(col == 3)
-				debug();
-
 			int[] values = upColumn[col];
 			int valuesIndex = 0;
 
@@ -331,10 +474,6 @@ public class PicrossSolver{
 					int max = i - val;
 
 					for(; i > max; i--){
-						// DEBUG
-						if(i < 0 || col < 0)
-							debug();
-
 						picture[i][col] = FILLED;
 					}
 
@@ -613,9 +752,13 @@ public class PicrossSolver{
 	}
 
 	private static void display(int[][] picture){
+		display(picture, "Latest");
+	}
+
+	private static void display(int[][] picture, String title){
 		Display panel = new PicrossSolver().new Display(picture);
 
-		JFrame frame = new JFrame("Game of Life");
+		JFrame frame = new JFrame(title);
 		frame.setSize(230, 250);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -630,6 +773,7 @@ public class PicrossSolver{
 
 	// TODO remove this function when it's over
 	private static void debug(){
+		System.currentTimeMillis();
 	}
 
 	class Display extends JPanel{
