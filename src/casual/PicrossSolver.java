@@ -17,6 +17,9 @@ public class PicrossSolver{
 	final static int lastRow = rowCount - 1;
 	final static int lastCol = colCount - 1;
 
+	private static int iteration = 0;
+	private static int[][] pictureRef = null;
+
 	public static void test(){
 		int[][] upColumn = new int[colCount][];
 		upColumn[0] = (arr(3, 1));
@@ -56,12 +59,114 @@ public class PicrossSolver{
 	private static void solve(int[][] picture, int[][] upColumn, int[][] leftColumn){
 		processInitial(picture, upColumn, leftColumn);
 
-		for(int i = 0; i < 4; i++){
+		dumpPicture(picture);
+
+		for(iteration = 0;; iteration++){
+
+			boolean isChangeDetected = false;
+
 			processSingles(picture, upColumn, leftColumn);
+			isChangeDetected |= testPicture(picture);
 
 			processStartsAndEnds(picture, upColumn, leftColumn);
+			isChangeDetected |= testPicture(picture);
 
 			processSetEmptiesByMax(picture, upColumn, leftColumn);
+			isChangeDetected |= testPicture(picture);
+
+			processFillBetweenEmpties(picture, upColumn, leftColumn);
+			isChangeDetected |= testPicture(picture);
+
+			if(!isChangeDetected){
+				break;
+			}
+		}
+
+		System.out.println("There was no change after the iteration: " + iteration);
+	}
+
+	private static boolean testPicture(int[][] picture){
+		for(int i = 0; i < rowCount; i++)
+			for(int j = 0; j < colCount; j++)
+				if(pictureRef[i][j] != UNKNOWN && pictureRef[i][j] != picture[i][j])
+					throw new RuntimeException("Bi önceki metot yanlýþ çalýþýyor");
+
+		boolean isChangeDetected = false;
+
+		for(int i = 0; i < rowCount; i++){
+			for(int j = 0; j < colCount; j++){
+				if(pictureRef[i][j] != picture[i][j]){
+					isChangeDetected = true;
+					break;
+				}
+			}
+
+			if(isChangeDetected)
+				break;
+		}
+
+		dumpPicture(picture);
+
+		return isChangeDetected;
+	}
+
+	private static void dumpPicture(int[][] picture){
+		pictureRef = new int[rowCount][colCount];
+
+		for(int i = 0; i < rowCount; i++)
+			for(int j = 0; j < colCount; j++)
+				pictureRef[i][j] = picture[i][j];
+	}
+
+	private static void processFillBetweenEmpties(int[][] picture, int[][] upColumn, int[][] leftColumn){
+		for(int col = 0; col < colCount; col++){
+
+			int[] values = upColumn[col];
+
+			// TODO generate table for this
+			int minValue = getMinValue(values);
+
+			int lastEmptyIndex = -1;
+
+			for(int i = 0; i < rowCount; i++){
+				int cell = picture[i][col];
+
+				if(cell == FILLED)
+					lastEmptyIndex = -1;
+				if(cell == EMPTY){
+					if(lastEmptyIndex >= 0 && i - lastEmptyIndex > 1 && i - lastEmptyIndex - 1 < minValue){
+						for(int k = lastEmptyIndex + 1; k < i; k++)
+							picture[k][col] = EMPTY;
+					}
+
+					lastEmptyIndex = i;
+				}
+			}
+		}
+
+		for(int row = 0; row < rowCount; row++){
+
+			int[] values = leftColumn[row];
+
+			// TODO generate table for this
+			int minValue = getMinValue(values);
+
+			int lastEmptyIndex = -1;
+
+			for(int i = 0; i < colCount; i++){
+				int cell = picture[row][i];
+
+				if(cell == FILLED)
+					lastEmptyIndex = -1;
+				if(cell == EMPTY){
+					if(lastEmptyIndex >= 0 && i - lastEmptyIndex > 1 && i - lastEmptyIndex - 1 < minValue){
+						for(int k = lastEmptyIndex + 1; k < i; k++)
+							picture[row][k] = EMPTY;
+					}
+
+					lastEmptyIndex = i;
+				}
+			}
 		}
 	}
 
@@ -147,6 +252,20 @@ public class PicrossSolver{
 		}
 	}
 
+	private static int getMinValue(int[] values){
+		int minIndex = 0;
+		int minValue = values[minIndex];
+
+		for(int i = 1; i < values.length; i++){
+			if(values[i] < minValue){
+				minIndex = i;
+				minValue = values[minIndex];
+			}
+		}
+
+		return minValue;
+	}
+
 	private static int getMaxValue(int[] values){
 		int maxIndex = 0;
 		int maxValue = values[maxIndex];
@@ -212,6 +331,10 @@ public class PicrossSolver{
 					int max = i - val;
 
 					for(; i > max; i--){
+						// DEBUG
+						if(i < 0 || col < 0)
+							debug();
+
 						picture[i][col] = FILLED;
 					}
 
