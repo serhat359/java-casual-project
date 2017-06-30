@@ -55,7 +55,91 @@ public class PicrossSolver{
 
 	private static void solve(int[][] picture, int[][] upColumn, int[][] leftColumn){
 		processInitial(picture, upColumn, leftColumn);
+
 		processSingles(picture, upColumn, leftColumn);
+
+		processStartsAndEnds(picture, upColumn, leftColumn);
+	}
+
+	private static void processStartsAndEnds(int[][] picture, int[][] upColumn, int[][] leftColumn){
+
+		for(int col = 0; col < colCount; col++){
+
+			// DEBUG
+			if(col == 3)
+				debug();
+
+			int[] values = upColumn[col];
+			int valuesIndex = 0;
+
+			boolean outerBreak = false;
+
+			for(int i = 0; i < rowCount; i++){
+				int cell = picture[i][col];
+
+				if(cell == UNKNOWN){
+					outerBreak = true;
+					break;
+				}
+				else if(cell == FILLED){
+
+					int val = values[valuesIndex++];
+					int max = i + val;
+
+					for(; i < max; i++){
+						picture[i][col] = FILLED;
+					}
+
+					if(i < rowCount)
+						picture[i][col] = EMPTY;
+
+					i--;
+				}
+				else if(cell == EMPTY){
+
+				}
+			}
+
+			if(outerBreak)
+				continue;
+		}
+
+		for(int row = 0; row < rowCount; row++){
+
+			int[] values = leftColumn[row];
+			int valuesIndex = 0;
+
+			boolean outerBreak = false;
+
+			for(int i = 0; i < colCount; i++){
+				int cell = picture[row][i];
+
+				if(cell == UNKNOWN){
+					outerBreak = true;
+					break;
+				}
+				else if(cell == FILLED){
+
+					int val = values[valuesIndex++];
+					int max = i + val;
+
+					for(; i < max; i++){
+						picture[row][i] = FILLED;
+					}
+
+					if(i < rowCount)
+						picture[row][i] = EMPTY;
+
+					i--;
+				}
+				else if(cell == EMPTY){
+
+				}
+			}
+
+			if(outerBreak)
+				continue;
+		}
 	}
 
 	private static void processSingles(int[][] picture, int[][] upColumn, int[][] leftColumn){
@@ -71,18 +155,18 @@ public class PicrossSolver{
 				int i;
 
 				for(i = 0; i < rowCount; i++){
-					int val = picture[i][col];
+					int cell = picture[i][col];
 
-					if(val == FILLED){
+					if(cell == FILLED){
 						firstFilled = i;
 						break;
 					}
 				}
 
 				for(int j = lastRow; j >= i; j--){
-					int val = picture[i][col];
+					int cell = picture[i][col];
 
-					if(val == FILLED){
+					if(cell == FILLED){
 						lastFilled = i;
 						break;
 					}
@@ -93,10 +177,6 @@ public class PicrossSolver{
 
 				// Above is for filling in betweens
 				// Below is for finding reaching
-
-				// DEBUG
-				// old variables: firstFilled = 7, lastFilled = 7, filledSize = 1, reach = 3
-				// new variables: firstFilled = 6, lastFilled = 7, filledSize = 2, reach = 2
 
 				if(firstFilled >= 0){
 					int filledSize = lastFilled - firstFilled + 1;
@@ -150,18 +230,18 @@ public class PicrossSolver{
 				int i;
 
 				for(i = 0; i < colCount; i++){
-					int val = picture[row][i];
+					int cell = picture[row][i];
 
-					if(val == FILLED){
+					if(cell == FILLED){
 						firstFilled = i;
 						break;
 					}
 				}
 
 				for(int j = lastCol; j >= i; j--){
-					int val = picture[row][i];
+					int cell = picture[row][i];
 
-					if(val == FILLED){
+					if(cell == FILLED){
 						lastFilled = i;
 						break;
 					}
@@ -281,6 +361,9 @@ public class PicrossSolver{
 
 	private static int[] arr(int... values){
 		return values;
+	}
+
+	private static void debug(){
 	}
 
 	class Display extends JPanel{
