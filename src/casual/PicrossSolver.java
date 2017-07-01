@@ -1003,10 +1003,10 @@ public class PicrossSolver{
 				}
 
 				for(int j = lastRow; j >= i; j--){
-					int cell = picture[i][col];
+					int cell = picture[j][col];
 
 					if(cell == FILLED){
-						lastFilled = i;
+						lastFilled = j;
 						break;
 					}
 				}
@@ -1078,10 +1078,10 @@ public class PicrossSolver{
 				}
 
 				for(int j = lastCol; j >= i; j--){
-					int cell = picture[row][i];
+					int cell = picture[row][j];
 
 					if(cell == FILLED){
-						lastFilled = i;
+						lastFilled = j;
 						break;
 					}
 				}
