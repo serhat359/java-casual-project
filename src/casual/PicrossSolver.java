@@ -383,6 +383,8 @@ public class PicrossSolver{
 
 						maxValue = val;
 					}
+					else if(val > secondMaxValue)
+						secondMaxValue = val;
 				}
 
 				int filledIndex = -1;
@@ -450,6 +452,8 @@ public class PicrossSolver{
 
 						maxValue = val;
 					}
+					else if(val > secondMaxValue)
+						secondMaxValue = val;
 				}
 
 				int filledIndex = -1;
