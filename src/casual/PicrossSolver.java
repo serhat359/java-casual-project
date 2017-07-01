@@ -13,38 +13,67 @@ public class PicrossSolver{
 	final static int FILLED = 1;
 	final static int EMPTY = 2;
 
-	final static int rowCount = 10;
-	final static int colCount = 10;
+	final static int rowCount = 15;
+	final static int colCount = 15;
+	final static int displaySize = 20;
 	final static int lastRow = rowCount - 1;
 	final static int lastCol = colCount - 1;
 
 	private static int iteration = 0;
 	private static int[][] pictureRef = null;
+	
+	private static int[][] correct = {
+			{2,2,2,1,1,1,1,2,2,2,1,1,2,1,1},
+			{2,2,2,1,1,1,1,1,2,1,1,1,1,1,2},
+			{2,2,2,1,1,1,2,2,1,1,2,1,1,2,2},
+			{2,2,2,1,1,2,2,1,1,2,2,1,2,2,2},
+			{2,2,2,1,1,1,1,1,1,1,1,1,2,2,2},
+			{2,2,1,2,1,1,1,1,1,1,1,1,2,2,1},
+			{1,1,1,2,2,1,1,1,2,2,1,1,2,1,1},
+			{2,2,1,1,2,1,1,2,2,1,1,1,2,2,1},
+			{2,2,2,1,1,1,1,1,1,1,2,1,2,1,1},
+			{2,1,1,1,1,1,1,1,2,1,2,2,1,2,2},
+			{1,2,1,2,1,1,1,2,2,2,1,1,2,2,1},
+			{2,2,1,2,1,2,2,1,1,1,2,2,2,2,1},
+			{2,2,1,2,1,1,1,2,2,2,2,2,2,1,1},
+			{2,1,1,2,2,2,2,2,2,2,2,2,1,1,1},
+			{1,1,1,1,2,2,2,2,2,2,1,1,2,1,1}
+	};
 
 	public static void test(){
 		int[][] upColumn = new int[colCount][];
-		upColumn[0] = (arr(2, 3));
-		upColumn[1] = (arr(2, 1, 4));
-		upColumn[2] = (arr(7));
-		upColumn[3] = (arr(6));
-		upColumn[4] = (arr(1, 7));
-		upColumn[5] = (arr(4, 1, 1));
-		upColumn[6] = (arr(2, 1, 2));
-		upColumn[7] = (arr(9));
-		upColumn[8] = (arr(5, 1));
-		upColumn[9] = (arr(1, 4));
+		upColumn[0] = (arr(1,1,1));
+		upColumn[1] = (arr(1,1,2));
+		upColumn[2] = (arr(3,6));
+		upColumn[3] = (arr(5,3,1));
+		upColumn[4] = (arr(6,5));
+		upColumn[5] = (arr(3, 7,1));
+		upColumn[6] = (arr(2,7,1));
+		upColumn[7] = (arr(1,4,2,1));
+		upColumn[8] = (arr(4,1,1));
+		upColumn[9] = (arr(2,2,3,1));
+		upColumn[10] = (arr(2,4,1,1));
+		upColumn[11] = (arr(9,1,1));
+		upColumn[12] = (arr(2,1,1));
+		upColumn[13] = (arr(2,1,1,3));
+		upColumn[14] = (arr(1,4,5));
 
 		int[][] leftColumn = new int[rowCount][];
-		leftColumn[0] = (arr(1, 1, 1, 1));
-		leftColumn[1] = (arr(1, 3));
-		leftColumn[2] = (arr(1, 1, 1));
-		leftColumn[3] = (arr(3, 2, 3));
-		leftColumn[4] = (arr(8));
-		leftColumn[5] = (arr(3, 3));
-		leftColumn[6] = (arr(6, 3));
-		leftColumn[7] = (arr(5, 2));
-		leftColumn[8] = (arr(8));
-		leftColumn[9] = (arr(4, 3));
+		leftColumn[0] = (arr(4,2,2));
+		leftColumn[1] = (arr(5,5));
+		leftColumn[2] = (arr(3,2,2));
+		leftColumn[3] = (arr(2,2,1));
+		leftColumn[4] = (arr(9));
+		leftColumn[5] = (arr(1,8,1));
+		leftColumn[6] = (arr(3,3,2,2));
+		leftColumn[7] = (arr(2,2,3,1));
+		leftColumn[8] = (arr(7,1,2));
+		leftColumn[9] = (arr(7,1,1));
+		leftColumn[10] = (arr(1,1,3,2,1));
+		leftColumn[11] = (arr(1,1,3,1));
+		leftColumn[12] = (arr(1,3,2));
+		leftColumn[13] = (arr(2,3));
+		leftColumn[14] = (arr(4,2,2));
 
 		solveAndDisplay(upColumn, leftColumn);
 	}
@@ -473,14 +502,7 @@ public class PicrossSolver{
 	}
 
 	private static boolean testPicture(int[][] picture){
-		for(int i = 0; i < rowCount; i++)
-			for(int j = 0; j < colCount; j++)
-				if(pictureRef[i][j] != UNKNOWN && pictureRef[i][j] != picture[i][j]){
-					display(pictureRef, "Old One");
-					display(picture);
-					throw new RuntimeException("Bi önceki metot yanlýþ çalýþýyor: " + iteration);
-				}
-
+		
 		boolean isChangeDetected = false;
 
 		for(int i = 0; i < rowCount; i++){
@@ -495,17 +517,30 @@ public class PicrossSolver{
 				break;
 		}
 
+		for(int i = 0; i < rowCount; i++)
+			for(int j = 0; j < colCount; j++)
+				if(picture[i][j] != UNKNOWN && picture[i][j] != correct[i][j])
+				{
+					int asIs = picture[i][j];
+					int correctOne = correct[i][j];
+					display(pictureRef, "Hatasýz olan");
+					display(picture, "Hatalý olan");
+					throw new RuntimeException("Önceki metot yanlýþ, iteration: "+iteration+ ", row: "+i+", col: "+j);
+				}
+
 		dumpPicture(picture);
 
 		return isChangeDetected;
 	}
 
-	private static void dumpPicture(int[][] picture){
+	private static int[][] dumpPicture(int[][] picture){
 		pictureRef = new int[rowCount][colCount];
 
 		for(int i = 0; i < rowCount; i++)
 			for(int j = 0; j < colCount; j++)
 				pictureRef[i][j] = picture[i][j];
+		
+		return pictureRef;
 	}
 
 	private static void processFillBetweenEmpties(int[][] picture, int[][] upColumn, int[][] leftColumn){
@@ -1152,10 +1187,10 @@ public class PicrossSolver{
 	}
 
 	private static void display(int[][] picture, String title){
-		Display panel = new PicrossSolver().new Display(picture);
+		Display panel = new PicrossSolver().new Display(dumpPicture(picture));
 
 		JFrame frame = new JFrame(title);
-		frame.setSize(220, 240);
+		frame.setSize(20 + displaySize*colCount, 40 + displaySize*rowCount);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(panel);
@@ -1201,8 +1236,7 @@ public class PicrossSolver{
 
 			Graphics2D g2d = (Graphics2D)g;
 
-			int size = 20;
-			int quarter = size / 4;
+			int quarter = displaySize / 4;
 			int threeQuarter = quarter + 2 * quarter;
 
 			for(int row = 0; row < picture.length; row++){
@@ -1214,17 +1248,17 @@ public class PicrossSolver{
 					if(value == UNKNOWN){
 						Color color = Color.WHITE;
 						g2d.setColor(color);
-						g2d.fillRect(col * size, row * size, size, size);
+						g2d.fillRect(col * displaySize, row * displaySize, displaySize, displaySize);
 					}
 					else if(value == FILLED){
 						Color color = Color.BLACK;
 						g2d.setColor(color);
-						g2d.fillRect(col * size, row * size, size, size);
+						g2d.fillRect(col * displaySize, row * displaySize, displaySize, displaySize);
 					}
 					else if(value == EMPTY){
 						g2d.setColor(Color.DARK_GRAY);
-						int xOffset = col * size;
-						int yOffset = row * size;
+						int xOffset = col * displaySize;
+						int yOffset = row * displaySize;
 						g2d.drawLine(xOffset + quarter, yOffset + quarter, xOffset + threeQuarter,
 								yOffset + threeQuarter);
 						g2d.drawLine(xOffset + quarter, yOffset + threeQuarter, xOffset + threeQuarter,
