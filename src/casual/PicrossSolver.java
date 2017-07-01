@@ -23,28 +23,28 @@ public class PicrossSolver{
 
 	public static void test(){
 		int[][] upColumn = new int[colCount][];
-		upColumn[0] = (arr(3, 1));
-		upColumn[1] = (arr(2, 1, 1));
-		upColumn[2] = (arr(3, 1, 1));
-		upColumn[3] = (arr(8));
-		upColumn[4] = (arr(3, 3));
-		upColumn[5] = (arr(2, 2, 1, 1));
-		upColumn[6] = (arr(4, 2));
-		upColumn[7] = (arr(8, 1));
-		upColumn[8] = (arr(1, 5));
-		upColumn[9] = (arr(2, 1, 1, 1));
+		upColumn[0] = (arr(2, 3));
+		upColumn[1] = (arr(2, 1, 4));
+		upColumn[2] = (arr(7));
+		upColumn[3] = (arr(6));
+		upColumn[4] = (arr(1, 7));
+		upColumn[5] = (arr(4, 1, 1));
+		upColumn[6] = (arr(2, 1, 2));
+		upColumn[7] = (arr(9));
+		upColumn[8] = (arr(5, 1));
+		upColumn[9] = (arr(1, 4));
 
 		int[][] leftColumn = new int[rowCount][];
-		leftColumn[0] = (arr(4));
-		leftColumn[1] = (arr(6, 1));
-		leftColumn[2] = (arr(8));
-		leftColumn[3] = (arr(4, 3));
-		leftColumn[4] = (arr(1, 1, 1, 3));
-		leftColumn[5] = (arr(1, 1, 1, 2));
-		leftColumn[6] = (arr(1, 3, 3));
-		leftColumn[7] = (arr(1, 5, 1));
-		leftColumn[8] = (arr(1, 3));
-		leftColumn[9] = (arr(1, 1, 1, 1));
+		leftColumn[0] = (arr(1, 1, 1, 1));
+		leftColumn[1] = (arr(1, 3));
+		leftColumn[2] = (arr(1, 1, 1));
+		leftColumn[3] = (arr(3, 2, 3));
+		leftColumn[4] = (arr(8));
+		leftColumn[5] = (arr(3, 3));
+		leftColumn[6] = (arr(6, 3));
+		leftColumn[7] = (arr(5, 2));
+		leftColumn[8] = (arr(8));
+		leftColumn[9] = (arr(4, 3));
 
 		solveAndDisplay(upColumn, leftColumn);
 	}
@@ -94,12 +94,122 @@ public class PicrossSolver{
 			processCheckAllCounts(picture, upColumn, leftColumn);
 			isChangeDetected |= testPicture(picture);
 
+			// seri baþlarýndaki ve sonlarýndaki küçük boþluklara çarpý atýyor
+			processStartingAndEndingUnknowns(picture, upColumn, leftColumn);
+			isChangeDetected |= testPicture(picture);
+
 			if(!isChangeDetected){
 				break;
 			}
 		}
 
 		System.out.println("There was no change after the iteration: " + iteration);
+	}
+
+	private static void processStartingAndEndingUnknowns(int[][] picture, int[][] upColumn, int[][] leftColumn){
+		for(int col = 0; col < colCount; col++){
+
+			int[] values = upColumn[col];
+
+			int unknownCount = 0;
+
+			for(int i = 0; i < rowCount; i++){
+				int cell = picture[i][col];
+
+				if(cell == UNKNOWN)
+					unknownCount++;
+				else if(cell == FILLED){
+					unknownCount = 0;
+					break;
+				}
+				else
+					break;
+			}
+
+			int firstVal = values[0];
+
+			if(unknownCount > 0 && unknownCount < firstVal){
+				for(int i = 0; i < unknownCount; i++)
+					picture[i][col] = EMPTY;
+			}
+
+			// Above is regular iteration
+			// Below is reverse iteration
+
+			unknownCount = 0;
+
+			for(int i = rowCount - 1; i >= 0; i--){
+				int cell = picture[i][col];
+
+				if(cell == UNKNOWN)
+					unknownCount++;
+				else if(cell == FILLED){
+					unknownCount = 0;
+					break;
+				}
+				else
+					break;
+			}
+
+			int lastVal = values[values.length - 1];
+
+			if(unknownCount > 0 && unknownCount < lastVal){
+				for(int i = 0; i < unknownCount; i++)
+					picture[lastRow - i][col] = EMPTY;
+			}
+		}
+
+		for(int row = 0; row < rowCount; row++){
+
+			int[] values = leftColumn[row];
+
+			int unknownCount = 0;
+
+			for(int i = 0; i < colCount; i++){
+				int cell = picture[row][i];
+
+				if(cell == UNKNOWN)
+					unknownCount++;
+				else if(cell == FILLED){
+					unknownCount = 0;
+					break;
+				}
+				else
+					break;
+			}
+
+			int firstVal = values[0];
+
+			if(unknownCount > 0 && unknownCount < firstVal){
+				for(int i = 0; i < unknownCount; i++)
+					picture[row][i] = EMPTY;
+			}
+
+			// Above is regular iteration
+			// Below is reverse iteration
+
+			unknownCount = 0;
+
+			for(int i = colCount - 1; i >= 0; i--){
+				int cell = picture[row][i];
+
+				if(cell == UNKNOWN)
+					unknownCount++;
+				else if(cell == FILLED){
+					unknownCount = 0;
+					break;
+				}
+				else
+					break;
+			}
+
+			int lastVal = values[values.length - 1];
+
+			if(unknownCount > 0 && unknownCount < lastVal){
+				for(int i = 0; i < unknownCount; i++)
+					picture[row][lastCol - i] = EMPTY;
+			}
+		}
 	}
 
 	private static void processCheckAllCounts(int[][] picture, int[][] upColumn, int[][] leftColumn){
@@ -1045,7 +1155,7 @@ public class PicrossSolver{
 		Display panel = new PicrossSolver().new Display(picture);
 
 		JFrame frame = new JFrame(title);
-		frame.setSize(230, 250);
+		frame.setSize(220, 240);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(panel);
