@@ -3,7 +3,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public class MyLinkedList<T>{
+public class MyLinkedList<T> implements Iterable<T>{
 
 	// First and last elements of the linked list
 	private Node<T> start = null;
@@ -115,6 +115,7 @@ public class MyLinkedList<T>{
 		return size == 0;
 	}
 
+	@Override
 	public Iterator<T> iterator(){
 		return new Iterator<T>(){
 			Node<T> n = null; // The node returned with the next() operation

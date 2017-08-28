@@ -109,7 +109,6 @@ public class FunctionSolveMethod{
 		FileInputStream fis = new FileInputStream(file);
 
 		buffer = new byte[dim * dim];
-		int greatest = (char)('0' + dim);
 
 		for(int i = 0; i < dim; i++){
 			fis.read(buffer, dim * i, dim);

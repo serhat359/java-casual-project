@@ -1,12 +1,13 @@
 package casual;
 
 import java.awt.HeadlessException;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 
 public class Casual{
-	public static void main(String[] args) throws NumberFormatException, HeadlessException{
+	public static void main(String[] args) throws NumberFormatException, HeadlessException, IOException{
 
 		// CuttingRod.test();
 
@@ -54,11 +55,24 @@ public class Casual{
 
 		// PrimeFactor.test();
 
-		int sumOfAll = sum(6,8,3);
-		
-		System.out.println(sumOfAll);
+		PicrossSolver.test();
 
-		System.out.println("hello");
+		int[] x = { 1, 2 };
+
+		for(int i = 0; i < x.length; i++){
+
+		}
+
+		// System.out.println("hello");
+	}
+
+	public static long[] convertToLongArray(int[] arr){
+		long[] newarr = new long[arr.length];
+
+		for(int i = 0; i < arr.length; i++)
+			newarr[i] = arr[i];
+
+		return newarr;
 	}
 
 	public static int sum(int... values){
@@ -122,7 +136,7 @@ public class Casual{
 		return newarr;
 	}
 
-	private static void getGeometricTriangles(){
+	public static void getGeometricTriangles(){
 		HashMap<Integer, String> table = new HashMap<>();
 
 		for(int i = 2; i < 2000; i++){
@@ -142,7 +156,7 @@ public class Casual{
 		}
 	}
 
-	private static void testLambdaExp(){
+	public static void testLambdaExp(){
 		Integer[] myList = { 3, 38, 28, 10 };
 
 		Arrays.stream(myList).filter(x -> x > 10).map(x -> Integer.toString(x)).sorted().forEach(System.out::println);
